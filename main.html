@@ -1,0 +1,54 @@
+{% extends 'blog.html' %}
+{% block content %}
+
+<h1 class="title">{% block title %} Blogs Pagination {% endblock %}</h1>
+<div class="content">
+    <h2>(Page {{ pagination.page }})</h2>
+    {% for blog in pagination.items %}
+    <div class="blog">
+        <p><b>#{{ blog.id }}</b></p>
+        <b>
+            <p class="title"> <p style='color: red;'>Title: </p> {{ blog.title }} <p style="color: red;">Description: </p> {{ blog.description }}</p>
+        </b>
+        <br>
+        <br>
+        <p>Blog ID:  {{ blog.id }}</p>
+        <p>Blog Title:  {{ blog.title }}</p>
+        <p>Blog Description:  {{ blog.description }}</p>
+    </div>
+    {% endfor %}
+</div>
+<div class="pagination">
+    {% if pagination.has_prev %}
+       <span>
+        <!--  page=pagination.prev_num  -> burada 'page' URL parametrdir  -->
+        <!--  'main' is a view function, beleki, biz 'main' adli view function'a baglaniriq  -->
+        <!--  url_for('main', page=pagination.prev_num) funtion call istifade ederek, evvelki page'a baglaniriq -->
+        <a class="page-number" href="{{ url_for('main', page=pagination.prev_num) }}">
+            Previous  {{ '<<<' }}  <!-- evvelki page'a baglanmaq ucun <<< link veririk -->
+        </a>
+       </span>
+    {% endif %}
+    
+    {% for number in pagination.iter_pages() %}  <!-- linkleri butun movcud page'lerde gormek ucun iter_pages() method istifade edirik; -->
+       {% if pagination.page != number %}   <!--  burada bir condition istifade edirik, sebebi oldugumuz sehifenin nomresini diger page number'lerden ferqlendirmek, beleikle, eyni sehifede isek, linksiz gorunecek hemin/ oldugumuz /cari page number, qalanlari ise link verilmis, rengli gorunecek; ki user hansi sehifede oldugunu bilsin  -->
+          <span>
+            <a class="page-number"
+                href="{{ url_for('main', page=number) }}">
+            {{ number }}
+            </a>       
+          </span>
+        {% else %}
+            <span class="current-page-number">{{ number }}</span>
+        {% endif %}
+    {% endfor %}
+    {% if pagination.has_next %}   <!--  if current page has a next page, then:   -->
+       <span>
+          <a class="page-number"
+              href="{{ url_for('main', page=pagination.next_num) }}">
+              {{ '>>>' }}  Next
+            </a>
+       </span>
+    {% endif %}
+</div>
+{% endblock %}
